@@ -57,7 +57,7 @@ def multiplelinks(pin):
 def u_to_s(uni):
     return unicodedata.normalize('NFKD',uni).encode('ascii','ignore')
 
-class scaperpin(object):
+class scraperpin(object):
 
     def singlelinkfun(self, persistence = 120, debug = False):
         localmaximg = maximages
