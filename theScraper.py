@@ -26,27 +26,22 @@ downloadtodir = "C:/folder/Downloaded_images"
 
 def downloadallimages(myinput, direc):
     
-    if isinstance(myinput, str) or isinstance(myinput, bytes):
+    if isinstance(myinput, (str, bytes)):
         res = requests.get(myinput)
         res.raise_for_status()
         outfile = direc + "/" + os.path.basename(urlparse(myinput).path)
         toFile = open(outfile, 'wb')
-        for chunk in res.iter_content(100000):
+        for _ in res.iter_content(100000):
             toFile.close()
     elif isinstance(myinput, list):
         for i in myinput:
             download(i, direc)
-    else:
-        pass
 
 
 def multiplelinks(pin):
     localmaximg = maximages
     fileread = pd.read_csv(csvfileloc,header=None).values.tolist()
-    fp = []
-    for i in range(0,len(fileread)):
-        fp.append(fileread[i][0])
-    
+    fp = [fileread[i][0] for i in range(0,len(fileread))]
     final = []
     for url in fp:
         eachlink = pin.singlelinkfun(url)
@@ -80,8 +75,7 @@ class scraperpin(object):
                             print("More than persistence limit")
                         return final_results
                     for i in images:
-                        src = i.get_attribute("src")
-                        if src:
+                        if src := i.get_attribute("src"):
                             if src.find("/236x/") != -1:
                                 src = src.replace("/236x/","/736x/")
                                 results.append(u_to_s(src))
@@ -134,9 +128,7 @@ else:
     images = multiplelinks(pin)
 
 print ("Before downloading")
-imgs = []
-for i in images:
-    imgs.append(i.decode())
+imgs = [i.decode() for i in images]
 downloadallimages(imgs, downloadtodir)
 
 print ("Finished downloading")
